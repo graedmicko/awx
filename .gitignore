@@ -1,0 +1,32 @@
+# Ansible temporary & retry files
+*.retry
+*.pyc
+*.pyo
+__pycache__/
+
+# Ansible Vault
+.vault_pass*
+*.vault
+
+# Ansible collections and roles downloaded by requirements.yml (optional local cache)
+collections/ansible_collections/
+roles/imported/
+.ansible/
+.cache/
+
+# Execution Environments & build artifacts
+context/
+_build/
+
+# Local deployment temporary artifacts
+deploy/.state/
+*.log
+kubeconfig*
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~

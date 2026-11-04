@@ -1,0 +1,19 @@
+---
+version: 3
+
+images:
+  base_image:
+    name: quay.io/ansible/awx-ee:latest
+
+dependencies:
+  galaxy: requirements.yml
+  python:
+    - requests>=2.31.0
+    - pyyaml>=6.0
+  system:
+    - curl [platform:rpm]
+    - git [platform:rpm]
+
+additional_build_steps:
+  prepend_base:
+    - RUN echo "Building custom Execution Environment for AWX project..."

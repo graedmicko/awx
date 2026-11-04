@@ -1,0 +1,6 @@
+---
+- name: AWX Starter Site Playbook
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: starter

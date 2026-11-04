@@ -1,0 +1,42 @@
+---
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+metadata:
+  name: awx-demo
+  namespace: awx
+spec:
+  # Expose AWX Web UI via NodePort or LoadBalancer
+  service_type: NodePort
+  nodeport_port: 30080
+
+  # Resource allocations (suitable for local laptop / dev environment)
+  web_resource_requirements:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+  task_resource_requirements:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1500m
+      memory: 2Gi
+
+  ee_resource_requirements:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+  # Admin user configuration
+  admin_user: admin
+  # Password secret: if omitted, AWX operator auto-generates secret 'awx-demo-admin-password'
+
+  # Projects storage
+  projects_persistence: false

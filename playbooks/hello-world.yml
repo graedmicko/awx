@@ -1,0 +1,36 @@
+---
+- name: AWX Starter Hello World & Environment Diagnostics
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Display Project Banner
+      ansible.builtin.debug:
+        msg:
+          - "{{ project_banner_message | default('Ansible AWX Starter Project') }}"
+          - "Project: {{ project_name | default('awx-starter') }} (Env: {{ project_environment | default('dev') }})"
+
+    - name: Display Host Diagnostics
+      ansible.builtin.debug:
+        msg:
+          - "Hostname: {{ ansible_hostname | default('N/A') }}"
+          - "OS Family: {{ ansible_os_family | default('N/A') }} ({{ ansible_distribution | default('N/A') }} {{ ansible_distribution_version | default('') }})"
+          - "Architecture: {{ ansible_architecture | default('N/A') }}"
+          - "Python Version: {{ ansible_python.version.major | default('?') }}.{{ ansible_python.version.minor | default('?') }}"
+          - "Default IPv4: {{ ansible_default_ipv4.address | default('N/A') }}"
+
+    - name: Detect AWX / Tower Execution Environment
+      ansible.builtin.debug:
+        msg: >
+          {% if tower_job_id is defined or awx_job_id is defined %}
+          [AWX RUNTIME DETECTED]
+          Job ID: {{ tower_job_id | default(awx_job_id) }}
+          Job Template: {{ tower_job_template_name | default(awx_job_template_name | default('N/A')) }}
+          User: {{ tower_user_name | default(awx_user_name | default('System')) }}
+          {% else %}
+          [STANDALONE / CLI RUNTIME]
+          Not running directly inside an AWX Job Template.
+          {% endif %}
+
+    - name: Run Sample Task
+      ansible.builtin.debug:
+        msg: "AWX Starter Playbook executed successfully on {{ inventory_hostname }} at {{ ansible_date_time.iso8601 }}."

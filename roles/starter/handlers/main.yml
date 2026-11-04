@@ -1,0 +1,4 @@
+---
+- name: Notify starter completion
+  ansible.builtin.debug:
+    msg: "[Handler] Starter role configuration has completed successfully."

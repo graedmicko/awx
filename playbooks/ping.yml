@@ -1,0 +1,14 @@
+---
+- name: AWX Connectivity & Healthcheck (Ping)
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Ping target hosts
+      ansible.builtin.ping:
+      register: ping_result
+
+    - name: Display connection success
+      ansible.builtin.debug:
+        msg: >
+          Host {{ inventory_hostname }} is reachable!
+          Ping response: {{ ping_result.ping | default('pong') }}

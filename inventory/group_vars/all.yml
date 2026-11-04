@@ -1,0 +1,18 @@
+---
+# ==============================================================================
+# Global Variables (applied to all hosts)
+# ==============================================================================
+
+project_name: "awx-starter"
+project_environment: "development"
+project_version: "1.0.0"
+
+# Application / Banner settings
+project_banner_message: "=== Managed by Ansible AWX Project ==="
+project_demo_dir: "/tmp/awx-starter-demo"
+
+# Default system parameters
+system_timezone: "UTC"
+system_ntp_servers:
+  - "0.pool.ntp.org"
+  - "1.pool.ntp.org"
