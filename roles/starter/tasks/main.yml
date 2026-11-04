@@ -28,3 +28,4 @@
     - ansible_os_family is defined and ansible_os_family != 'Windows'
   ignore_errors: true
   notify: Notify starter completion
+

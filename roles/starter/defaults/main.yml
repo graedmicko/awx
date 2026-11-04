@@ -4,3 +4,4 @@ starter_message: "Hello from the AWX starter role!"
 starter_enabled: true
 starter_create_demo_file: true
 starter_demo_file_path: "{{ project_demo_dir | default('/tmp/awx-starter-demo') }}/greeting.txt"
+

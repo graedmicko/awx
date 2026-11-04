@@ -5,3 +5,4 @@
 
 is_local_runner: true
 custom_greeting: "Running locally inside AWX Execution Environment!"
+

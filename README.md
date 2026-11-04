@@ -189,3 +189,4 @@ Ikuti langkah-langkah berikut di dashboard AWX:
 | `playbooks/ping.yml` | Memverifikasi konektivitas jaringan & SSH ke target node | `all` |
 | `playbooks/hello-world.yml` | Diagnostik sistem (OS, IP, Arch, Python) & deteksi runtime AWX | `all` |
 | `playbooks/site.yml` | Master playbook yang mengeksekusi role `starter` | `all` |
+

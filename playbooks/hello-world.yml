@@ -34,3 +34,4 @@
     - name: Run Sample Task
       ansible.builtin.debug:
         msg: "AWX Starter Playbook executed successfully on {{ inventory_hostname }} at {{ ansible_date_time.iso8601 }}."
+

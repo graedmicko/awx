@@ -12,3 +12,4 @@
         msg: >
           Host {{ inventory_hostname }} is reachable!
           Ping response: {{ ping_result.ping | default('pong') }}
+
