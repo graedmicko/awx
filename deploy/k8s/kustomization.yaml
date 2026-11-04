@@ -10,3 +10,8 @@ resources:
 # Target namespace
 namespace: awx
 
+# Replace deprecated gcr.io image with active quay.io mirror
+images:
+  - name: gcr.io/kubebuilder/kube-rbac-proxy
+    newName: quay.io/brancz/kube-rbac-proxy
+    newTag: v0.15.0
