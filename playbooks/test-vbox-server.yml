@@ -5,7 +5,7 @@
 # ==============================================================================
 
 - name: Phase 1 - Connectivity & SSH Handshake
-  hosts: vbox_servers
+  hosts: all
   gather_facts: false
   tasks:
     - name: Ping VirtualBox server
@@ -19,7 +19,7 @@
           is SUCCESSFUL! Ping response: {{ ping_output.ping }}
 
 - name: Phase 2 - Gather System Facts & Diagnostics
-  hosts: vbox_servers
+  hosts: all
   gather_facts: true
   tasks:
     - name: Display OS & System Diagnostics
@@ -38,7 +38,7 @@
           - "=============================================================="
 
 - name: Phase 3 - Verify Sudo Privilege Escalation
-  hosts: vbox_servers
+  hosts: all
   become: true
   gather_facts: false
   tasks:
