@@ -33,6 +33,7 @@ $requiredPaths = @(
     "inventory/host_vars/localhost.yml",
     "playbooks/ping.yml",
     "playbooks/hello-world.yml",
+    "playbooks/test-vbox-server.yml",
     "playbooks/site.yml",
     "roles/starter/tasks/main.yml",
     "roles/starter/defaults/main.yml",

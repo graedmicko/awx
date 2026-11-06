@@ -1,0 +1,80 @@
+---
+# ==============================================================================
+# Playbook: Test VirtualBox Target Server
+# Target Host: 192.168.56.103 (User: okta, Sudo: 123)
+# ==============================================================================
+
+- name: Phase 1 - Connectivity & SSH Handshake
+  hosts: vbox_servers
+  gather_facts: false
+  tasks:
+    - name: Ping VirtualBox server
+      ansible.builtin.ping:
+      register: ping_output
+
+    - name: Display connection success
+      ansible.builtin.debug:
+        msg: >
+          SSH connection to {{ inventory_hostname }} ({{ ansible_host | default(inventory_hostname) }})
+          is SUCCESSFUL! Ping response: {{ ping_output.ping }}
+
+- name: Phase 2 - Gather System Facts & Diagnostics
+  hosts: vbox_servers
+  gather_facts: true
+  tasks:
+    - name: Display OS & System Diagnostics
+      ansible.builtin.debug:
+        msg:
+          - "================= VIRTUALBOX SERVER PROFILE ================="
+          - "Hostname      : {{ ansible_hostname }}"
+          - "FQDN          : {{ ansible_fqdn | default(ansible_hostname) }}"
+          - "OS Distro     : {{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_distribution_release | default('') }})"
+          - "Kernel        : {{ ansible_kernel }}"
+          - "Architecture  : {{ ansible_architecture }}"
+          - "IPv4 Address  : {{ ansible_default_ipv4.address | default(ansible_all_ipv4_addresses | default(['N/A'])) }}"
+          - "Total Memory  : {{ (ansible_memtotal_mb / 1024) | round(2) }} GB"
+          - "CPU Cores     : {{ ansible_processor_vcpus | default(ansible_processor_count | default('N/A')) }}"
+          - "Date & Time   : {{ ansible_date_time.iso8601 }}"
+          - "=============================================================="
+
+- name: Phase 3 - Verify Sudo Privilege Escalation
+  hosts: vbox_servers
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Execute whoami with root privileges
+      ansible.builtin.command: whoami
+      register: whoami_res
+      changed_when: false
+
+    - name: Verify privilege escalation succeeded
+      ansible.builtin.assert:
+        that:
+          - whoami_res.stdout == 'root'
+        fail_msg: "Eskalasi ke root gagal! Hasil whoami: {{ whoami_res.stdout }}"
+        success_msg: "Eskalasi hak akses SUDO ROOT berhasil! (User terdeteksi: {{ whoami_res.stdout }})"
+
+    - name: Create verification stamp file in /tmp/awx_vbox_verified.txt
+      ansible.builtin.copy:
+        dest: /tmp/awx_vbox_verified.txt
+        content: |
+          ==================================================
+          Ansible AWX VirtualBox Server Verification Stamp
+          ==================================================
+          Target IP     : {{ ansible_host | default(inventory_hostname) }}
+          SSH User      : {{ ansible_user | default('okta') }}
+          Executed As   : {{ whoami_res.stdout }}
+          Timestamp     : {{ lookup('pipe', 'date') | default('Verified') }}
+          Status        : ALL CHECKS PASSED SUCCESSFULLY
+          ==================================================
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Display Final Success Banner
+      ansible.builtin.debug:
+        msg:
+          - "✅ [PASS] SSH Authentication Berhasil."
+          - "✅ [PASS] Pengumpulan Fakta Sistem Berhasil."
+          - "✅ [PASS] Eskalasi Sudo ke Root Berhasil."
+          - "✅ [PASS] File verifikasi tersimpan di /tmp/awx_vbox_verified.txt."

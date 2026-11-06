@@ -182,11 +182,62 @@ Ikuti langkah-langkah berikut di dashboard AWX:
 
 ---
 
+### Bagian 5: Menghubungkan & Menguji Server VirtualBox (192.168.56.103)
+
+Jika Anda memiliki target VM di VirtualBox lokal (misal IP: `192.168.56.103`, user: `okta`, password: `123`, sudo root: `123`), ikuti alur berikut:
+
+#### 1. Uji Konektivitas Cepat via Skrip
+Sebelum konfigurasi di AWX, jalankan uji konektivitas port SSH dari PowerShell:
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy/scripts/test-ssh-vbox.ps1
+```
+
+#### 2. Buat Machine Credential di AWX Web UI
+1. Masuk ke menu **Credentials** -> **Add**.
+2. Isi formulir:
+   - **Name**: `Cred-VBox-Okta`
+   - **Credential Type**: `Machine`
+   - **Type Details**:
+     - **Username**: `okta`
+     - **Password**: `123`
+     - **Privilege Escalation Method**: `sudo`
+     - **Privilege Escalation Password**: `123`
+3. Klik **Save**.
+
+#### 3. Daftarkan Host ke Inventory AWX
+1. Masuk ke menu **Inventories** -> klik nama Inventory Anda (misal `Local-or-Demo-Inventory`).
+2. Masuk ke tab **Hosts** -> klik **Add** -> **Add new host**.
+3. Isi kolom:
+   - **Host Name**: `192.168.56.103` (atau `vbox-node`)
+   - **Variables** (jika nama host bukan IP langsung):
+     ```yaml
+     ansible_host: 192.168.56.103
+     ```
+4. Klik **Save**.
+
+#### 4. Buat dan Jalankan Job Template
+1. Masuk ke menu **Templates** -> **Add** -> **Add job template**.
+2. Isi formulir:
+   - **Name**: `Test-VBox-Server`
+   - **Job Type**: `Run`
+   - **Inventory**: Pilih Inventory di atas
+   - **Project**: `AWX-Starter-Project`
+   - **Playbook**: Pilih `playbooks/test-vbox-server.yml`
+   - **Credentials**: Pilih `Cred-VBox-Okta`
+3. Klik **Save**, lalu klik tombol **Launch** (ikon roket).
+4. Playbook akan:
+   - Menjalankan ping SSH ke `192.168.56.103`
+   - Menampilkan profil sistem operasi, memori, CPU, dan kernel
+   - Melakukan eskalasi sudo ke `root` dan membuat file bukti `/tmp/awx_vbox_verified.txt`
+
+---
+
 ## 🛠️ Ringkasan Playbook Bawaan
 
 | Playbook | Fungsi Utama | Target Default |
 | :--- | :--- | :--- |
 | `playbooks/ping.yml` | Memverifikasi konektivitas jaringan & SSH ke target node | `all` |
 | `playbooks/hello-world.yml` | Diagnostik sistem (OS, IP, Arch, Python) & deteksi runtime AWX | `all` |
+| `playbooks/test-vbox-server.yml` | Tes SSH, fakta OS, dan eskalasi root (sudo) server VirtualBox | `vbox_servers` |
 | `playbooks/site.yml` | Master playbook yang mengeksekusi role `starter` | `all` |
 
